@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYWAL_COLORS="$HOME/.cache/wal/colors.sh"
 
 get_tmux_option() {
   local option value default
@@ -27,16 +28,26 @@ setw() {
 }
 
 main() {
-  local theme
-  theme="$(get_tmux_option "@catppuccin_flavour" "mocha")"
-
   # Aggregate all commands in one array
   local tmux_commands=()
 
-  # NOTE: Pulling in the selected theme by the theme that's being set as local
-  # variables.
-  # shellcheck source=catppuccin-frappe.tmuxtheme
-  source /dev/stdin <<<"$(sed -e "/^[^#].*=/s/^/local /" "${PLUGIN_DIR}/catppuccin-${theme}.tmuxtheme")"
+  # load pywal shell colors as local vars
+  source /dev/stdin <<<"$(sed -ne "/^[^#].*=/s/^/local /" "${PYWAL_COLORS}")"
+
+  # map to catppuccin colors
+  local thm_bg=$background
+  local thm_fg=$foreground
+  local thm_cyan=$color2
+  local thm_black=$color8
+  local thm_gray=$color15
+  local thm_magenta=$color7
+  local thm_pink=$color6
+  local thm_red=$color2
+  local thm_green=$color3
+  local thm_yellow=$color4
+  local thm_blue=$color9
+  local thm_orange=$color12
+  local thm_black4=$color0
 
   # status
   set status "on"
@@ -60,29 +71,29 @@ main() {
 
   # --------=== Statusline
 
-  # NOTE: Checking for the value of @catppuccin_window_tabs_enabled
+  # NOTE: Checking for the value of @pywal_window_tabs_enabled
   local wt_enabled
-  wt_enabled="$(get_tmux_option "@catppuccin_window_tabs_enabled" "off")"
+  wt_enabled="$(get_tmux_option "@pywal_window_tabs_enabled" "off")"
   readonly wt_enabled
 
   local right_separator
-  right_separator="$(get_tmux_option "@catppuccin_right_separator" "")"
+  right_separator="$(get_tmux_option "@pywal_right_separator" "")"
   readonly right_separator
 
   local left_separator
-  left_separator="$(get_tmux_option "@catppuccin_left_separator" "")"
+  left_separator="$(get_tmux_option "@pywal_left_separator" "")"
   readonly left_separator
 
   local user
-  user="$(get_tmux_option "@catppuccin_user" "off")"
+  user="$(get_tmux_option "@pywal_user" "off")"
   readonly user
 
   local host
-  host="$(get_tmux_option "@catppuccin_host" "off")"
+  host="$(get_tmux_option "@pywal_host" "off")"
   readonly host
 
   local date_time
-  date_time="$(get_tmux_option "@catppuccin_date_time" "off")"
+  date_time="$(get_tmux_option "@pywal_date_time" "off")"
   readonly date_time
 
   # These variables are the defaults so that the setw and set calls are easier to parse.
@@ -130,7 +141,7 @@ main() {
   local window_status_format=$show_directory_in_window_status
   local window_status_current_format=$show_directory_in_window_status_current
 
-  # NOTE: With the @catppuccin_window_tabs_enabled set to on, we're going to
+  # NOTE: With the @pywal_window_tabs_enabled set to on, we're going to
   # update the right_column1 and the window_status_* variables.
   if [[ "${wt_enabled}" == "on" ]]; then
     right_column1=$show_directory
