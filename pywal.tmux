@@ -32,21 +32,22 @@ main() {
   local tmux_commands=()
 
   # load pywal shell colors as local vars
-  source /dev/stdin <<<"$(sed -ne "/^[^#].*=/s/^/local /" "${PYWAL_COLORS}")"
+  # source /dev/stdin <<<"$(sed -ne "/^[^#].*=/s/^/local /p" "${PYWAL_COLORS}")"
+  source /dev/stdin <<<"$(grep -e '^color' -e '^foreground' -e '^background' -e '^cursor' "${PYWAL_COLORS}" | xargs -l echo "local")"
 
   # map to catppuccin colors
   local thm_bg=$background
   local thm_fg=$foreground
   local thm_cyan=$color2
   local thm_black=$color8
-  local thm_gray=$color15
-  local thm_magenta=$color7
+  local thm_gray=$color8
+  local thm_magenta=$color8
   local thm_pink=$color6
   local thm_red=$color2
   local thm_green=$color3
   local thm_yellow=$color4
   local thm_blue=$color9
-  local thm_orange=$color12
+  local thm_orange=$color5
   local thm_black4=$color0
 
   # status
